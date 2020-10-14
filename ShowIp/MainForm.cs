@@ -1,15 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -83,12 +76,12 @@ namespace ShowIp
                     if (FileVersion > ProductVersion)
                     {
                         Process.Start(@"Updater.exe", $"{updaterFolder}ShowIp.update \"" + Process.GetCurrentProcess().ProcessName + "\"");
-                        
+
                         Logger.WriteLog("checkUpdates", 0, "Process.Start");
                         // Process.Start(@"Updater.exe", $"{updaterFolder}ShowIp.update \"" + Process.GetCurrentProcess().ProcessName + "\"");
                         //Process.Start(@"d:\project\c#\ShowIp\ShowIp\UpdaterFolder\Updater.exe", "ShowIp.update");
                         Process.GetCurrentProcess().CloseMainWindow();
-                      
+
                         Logger.WriteLog("checkUpdates", 0, "Process.GetCurrentProcess().CloseMainWindow()");
                     }
                     else
