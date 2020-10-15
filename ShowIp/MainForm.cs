@@ -75,9 +75,8 @@ namespace ShowIp
                 if (File.Exists($"{updaterFolder}ShowIp.update"))
                     if (FileVersion > ProductVersion)
                     {
-                        Process.Start(@"Updater.exe", $"{updaterFolder}ShowIp.update \"" + Process.GetCurrentProcess().ProcessName + "\"");
-
-                        Logger.WriteLog("checkUpdates", 0, "Process.Start");
+                        Logger.WriteLog("checkUpdates", 0, "Process.Start:" + $"{updaterFolder}ShowIp.update " + Process.GetCurrentProcess().ProcessName + ".exe\"");
+                        Process.Start(@"Updater.exe", $"{updaterFolder}ShowIp.update " + Process.GetCurrentProcess().ProcessName + ".exe\"");
                         // Process.Start(@"Updater.exe", $"{updaterFolder}ShowIp.update \"" + Process.GetCurrentProcess().ProcessName + "\"");
                         //Process.Start(@"d:\project\c#\ShowIp\ShowIp\UpdaterFolder\Updater.exe", "ShowIp.update");
                         Process.GetCurrentProcess().CloseMainWindow();

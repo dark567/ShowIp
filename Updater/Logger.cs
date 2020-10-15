@@ -11,7 +11,7 @@ namespace Updater
     public class Logger
     {
         private static BlockingCollection<string> _blockingCollection;
-        private static string _filename = $"Log\\Logger-{DateTime.Now:dd.MM.yyy}.txt";
+        private static string _filename = $"Log\\LoggerUpdater-{DateTime.Now:dd.MM.yyy}.txt";
         private static Task _task;
 
         static Logger()
