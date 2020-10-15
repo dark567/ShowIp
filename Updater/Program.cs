@@ -14,8 +14,11 @@ namespace Updater
     {
         static void Main(string[] args)
         {
+            Logger.WriteLog("Updater", 0, "Start Updater");
+
             if (args.Length > 1)
             {
+                Logger.WriteLog("Updater", 0, "args.Length > 1");
                 Version FileVersion;
                 Version ProductVersion;
 
@@ -23,18 +26,13 @@ namespace Updater
                 doc.Load(@"settings.xml");
                 string updaterFolder = doc.GetElementsByTagName("updaterFolder")[0].InnerText;
 
-                Logger.WriteLog("Updater", 0, "Start Updater");
-
-
                 GetVersion(args, out FileVersion, out ProductVersion, updaterFolder);
                 if (FileVersion > ProductVersion)
                     try
                     {
                         Logger.WriteLog("Updater", 0, "FileVersion > ProductVersion");
 
-                        //string process = args[1].Replace("", ".exe");
                         string process = args[1].Replace(".exe", "");
-                        //process = process.Replace(@"\\\\", @"\");
 
                         if (CheckStatusProcess(process))
                         {
@@ -90,12 +88,10 @@ namespace Updater
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine(e.Message); //todo log
                         Logger.WriteLog("UpdaterException[if (FileVersion > ProductVersion)]", 0, e.Message);
                     }
                 else if (FileVersion == ProductVersion)
                 {
-                    Console.WriteLine("Starting " + args[1]);
                     Logger.WriteLog("Updater Starting", 0, "FileVersion == ProductVersion");
                     Logger.WriteLog("Updater Starting", 0, "Starting " + args[1]);
                     Process.Start(args[1]);
@@ -103,10 +99,23 @@ namespace Updater
                 else
                 {
                     Logger.WriteLog("UpdaterException", 0, "FileVersion <= ProductVersion");
+                    Logger.WriteLog("Updater Starting", 0, "Starting " + args[1]);
+                    Process.Start(args[1]);
                 }
+            }
+            else 
+            {
+                Logger.WriteLog("Updater", 0, "args.Length <= 1");
             }
         }
 
+        /// <summary>
+        /// GetVersion
+        /// </summary>
+        /// <param name="args"></param>
+        /// <param name="FileVersion"></param>
+        /// <param name="ProductVersion"></param>
+        /// <param name="updaterFolder"></param>
         private static void GetVersion(string[] args, out Version FileVersion, out Version ProductVersion, string updaterFolder)
         {
             if (File.Exists($"{updaterFolder}ShowIp.update"))
@@ -128,6 +137,11 @@ namespace Updater
             }
         }
 
+        /// <summary>
+        /// CheckStatusProcess
+        /// </summary>
+        /// <param name="nameProcess"></param>
+        /// <returns></returns>
         public static bool CheckStatusProcess(string nameProcess)
         {
             Process[] pname = Process.GetProcessesByName(nameProcess);

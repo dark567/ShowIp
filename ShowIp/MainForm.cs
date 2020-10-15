@@ -10,19 +10,27 @@ namespace ShowIp
 {
     public partial class MainForm : Form
     {
+        //pathToLog
         public static readonly string pathToLog = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Log");
 
         public MainForm()
         {
+            Logger.WriteLog("ShowIp", 0, "try MainForm()");
             if (!Directory.Exists(pathToLog))
             {
+                Logger.WriteLog("ShowIp", 0, "try Directory.CreateDirectory(pathToLog)");
                 Directory.CreateDirectory(pathToLog);
             }
 
             InitializeComponent();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        /// <summary>
+        /// MainForm_Load
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MainForm_Load(object sender, EventArgs e)
         {
             checkUpdates();
 
@@ -44,9 +52,13 @@ namespace ShowIp
             label2.Text += "\t" + GetLocalIPAddress();
             //}
 
-            this.Text += ":" + Application.ProductVersion;
+            this.Text += " V:" + Application.ProductVersion;
         }
 
+        /// <summary>
+        /// GetLocalIPAddress
+        /// </summary>
+        /// <returns></returns>
         public static string GetLocalIPAddress()
         {
             var host = Dns.GetHostEntry(Dns.GetHostName());
@@ -61,8 +73,13 @@ namespace ShowIp
             //throw new Exception("No network adapters with an IPv4 address in the system!");
         }
 
+        /// <summary>
+        /// checkUpdates
+        /// </summary>
         public void checkUpdates()
         {
+            Logger.WriteLog("checkUpdates", 0, "try checkUpdates()");
+
             XmlDocument doc = new XmlDocument();
             doc.Load(@"settings.xml");
             string updaterFolder = doc.GetElementsByTagName("updaterFolder")[0].InnerText;
@@ -75,57 +92,16 @@ namespace ShowIp
                 if (File.Exists($"{updaterFolder}ShowIp.update"))
                     if (FileVersion > ProductVersion)
                     {
-                        Logger.WriteLog("checkUpdates", 0, "Process.Start:" + $"{updaterFolder}ShowIp.update " + Process.GetCurrentProcess().ProcessName + ".exe\"");
+                        Logger.WriteLog("checkUpdates", 0, "try Process.Start:" + $"{updaterFolder}ShowIp.update " + Process.GetCurrentProcess().ProcessName + ".exe\"");
                         Process.Start(@"Updater.exe", $"{updaterFolder}ShowIp.update " + Process.GetCurrentProcess().ProcessName + ".exe\"");
-                        // Process.Start(@"Updater.exe", $"{updaterFolder}ShowIp.update \"" + Process.GetCurrentProcess().ProcessName + "\"");
-                        //Process.Start(@"d:\project\c#\ShowIp\ShowIp\UpdaterFolder\Updater.exe", "ShowIp.update");
+                        Logger.WriteLog("checkUpdates", 0, "try Process.GetCurrentProcess().CloseMainWindow()");
                         Process.GetCurrentProcess().CloseMainWindow();
-
-                        Logger.WriteLog("checkUpdates", 0, "Process.GetCurrentProcess().CloseMainWindow()");
-                    }
-                    else
-                    {
-                        if (File.Exists("ShowIp.update")) { File.Delete("ShowIp.update"); }
-                        Download();
                     }
             }
             catch (Exception ex)
             {
-                if (File.Exists("ShowIp.update")) { File.Delete("ShowIp.update"); }
-                Download();
+                Logger.WriteLog("checkUpdatesException", 0, ex.Message);
             }
-        }
-
-        private void Download()
-        {
-            try
-            {
-                XmlDocument doc = new XmlDocument();
-                //doc.Load(@"http://mysite/version.xml");
-                doc.Load(@"d:\project\c#\ShowIp\ShowIp\UpdaterFolder\version.xml");
-
-                Version remoteVersion = new Version(doc.GetElementsByTagName("version")[0].InnerText);
-                Version localVersion = new Version(Application.ProductVersion);
-
-                if (localVersion < remoteVersion)
-                {
-                    if (File.Exists("ShowIp.update")) { File.Delete("ShowIp.update"); }
-
-                    WebClient client = new WebClient();
-                    //client.DownloadProgressChanged += new DownloadProgressChangedEventHandler(ProgressChanged);
-                    //client.DownloadFileCompleted += new AsyncCompletedEventHandler(Completed);
-                    //client.DownloadFileAsync(new Uri(@"http://mysite/launcher.exe"), "launcher.update");
-                    client.DownloadFileAsync(new Uri(@"d:\project\c#\ShowIp\ShowIp\UpdaterFolder\ShowIp.update"), "ShowIp.update");
-
-                    try
-                    {
-                        Process.Start("Updater.exe", "ShowIp.update");
-                        Process.GetCurrentProcess().Kill();
-                    }
-                    catch (Exception) { }
-                }
-            }
-            catch (Exception) { }
         }
     }
 }
