@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Xml;
 
 namespace Updater
@@ -18,7 +14,7 @@ namespace Updater
 
             if (args.Length > 1)
             {
-                Logger.WriteLog("Updater", 0, "args.Length > 1");
+                Logger.WriteLog("Updater", 0, $"{args.Length} > 1");
                 Version FileVersion;
                 Version ProductVersion;
 
@@ -30,7 +26,7 @@ namespace Updater
                 if (FileVersion > ProductVersion)
                     try
                     {
-                        Logger.WriteLog("Updater", 0, "FileVersion > ProductVersion");
+                        Logger.WriteLog("Updater", 0, $"{FileVersion} > {ProductVersion}");
 
                         string process = args[1].Replace(".exe", "");
 
@@ -55,17 +51,17 @@ namespace Updater
                         {
                             if (!CheckStatusProcess(process))
                             {
-                                Logger.WriteLog("Updater", 0, "File.Delete(args[1]);");
+                                Logger.WriteLog("Updater", 0, $"File.Delete({args[1]});");
                                 File.Delete(args[1]);
                             }
                             else
                             {
-                                Logger.WriteLog("UpdaterDontDelete", 0, "!CheckStatusProcess(process))");
+                                Logger.WriteLog("UpdaterDontDelete", 0, $"!CheckStatusProcess({process}))");
                             }
                         }
                         else
                         {
-                            Logger.WriteLog("UpdaterDontDelete", 0, "!(File.Exists(args[0])");
+                            Logger.WriteLog("UpdaterDontDelete", 0, $"!(File.Exists({args[0]})");
                         }
 
 
@@ -77,33 +73,33 @@ namespace Updater
                         if ((FileVersion <= ProductVersion) && !CheckStatusProcess(process))
                         {
                             Console.WriteLine("Starting " + args[1]);
-                            Logger.WriteLog("Updater Starting", 0, "FileVersion <= ProductVersion");
+                            Logger.WriteLog("Updater Starting", 0, $"{FileVersion} <= {ProductVersion}");
                             Logger.WriteLog("Updater Starting", 0, "Starting " + args[1]);
                             Process.Start(args[1]);
                         }
                         else
                         {
-                            Logger.WriteLog("UpdaterStartingDontStart", 0, "FileVersion > ProductVersion && CheckStatusProcess(process)");
+                            Logger.WriteLog("UpdaterStartingDontStart", 0, $"{FileVersion} > {ProductVersion} && CheckStatusProcess({process})");
                         }
                     }
                     catch (Exception e)
                     {
-                        Logger.WriteLog("UpdaterException[if (FileVersion > ProductVersion)]", 0, e.Message);
+                        Logger.WriteLog($"UpdaterException[if ({FileVersion} > {ProductVersion})]", 0, e.Message);
                     }
                 else if (FileVersion == ProductVersion)
                 {
-                    Logger.WriteLog("Updater Starting", 0, "FileVersion == ProductVersion");
+                    Logger.WriteLog("Updater Starting", 0, $"{FileVersion} == {ProductVersion}");
                     Logger.WriteLog("Updater Starting", 0, "Starting " + args[1]);
                     Process.Start(args[1]);
                 }
                 else
                 {
-                    Logger.WriteLog("UpdaterException", 0, "FileVersion <= ProductVersion");
+                    Logger.WriteLog("UpdaterException", 0, $"{FileVersion} <= {ProductVersion}");
                     Logger.WriteLog("Updater Starting", 0, "Starting " + args[1]);
                     Process.Start(args[1]);
                 }
             }
-            else 
+            else
             {
                 Logger.WriteLog("Updater", 0, "args.Length <= 1");
             }

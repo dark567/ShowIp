@@ -15,6 +15,9 @@ namespace ShowIp
 
         public MainForm()
         {
+            if (!DotNetUtils.IsCompatible())
+                return;
+
             Logger.WriteLog("ShowIp", 0, "try MainForm()");
             if (!Directory.Exists(pathToLog))
             {
@@ -38,7 +41,7 @@ namespace ShowIp
             // Getting Ip address of local machine...
             // First get the host name of local machine.
             strHostName = Dns.GetHostName();
-            Console.WriteLine("Local Machine's Host Name: " + strHostName);
+            //Console.WriteLine("Local Machine's Host Name: " + strHostName);
             // Then using host name, get the IP address list..
             //IPHostEntry ipEntry = Dns.GetHostEntry(strHostName);
             //IPAddress[] addr = ipEntry.AddressList;
@@ -52,7 +55,7 @@ namespace ShowIp
             label2.Text += "\t" + GetLocalIPAddress();
             //}
 
-            this.Text += " V:" + Application.ProductVersion;
+            this.Text +=  $" V:{Application.ProductVersion}";
         }
 
         /// <summary>
@@ -81,15 +84,19 @@ namespace ShowIp
             Logger.WriteLog("checkUpdates", 0, "try checkUpdates()");
 
             XmlDocument doc = new XmlDocument();
+
+            //if (!File.Exists("settings.xml"))
+            //    throw new Exception("File not exists");
+
             doc.Load(@"settings.xml");
             string updaterFolder = doc.GetElementsByTagName("updaterFolder")[0].InnerText;
-
-            Version FileVersion = new Version(FileVersionInfo.GetVersionInfo($"{updaterFolder}ShowIp.update").FileVersion);
-            Version ProductVersion = new Version(Application.ProductVersion);
 
             try
             {
                 if (File.Exists($"{updaterFolder}ShowIp.update"))
+                {
+                    Version FileVersion = new Version(FileVersionInfo.GetVersionInfo($"{updaterFolder}ShowIp.update").FileVersion);
+                    Version ProductVersion = new Version(Application.ProductVersion);
                     if (FileVersion > ProductVersion)
                     {
                         Logger.WriteLog("checkUpdates", 0, "try Process.Start:" + $"{updaterFolder}ShowIp.update " + Process.GetCurrentProcess().ProcessName + ".exe\"");
@@ -97,6 +104,7 @@ namespace ShowIp
                         Logger.WriteLog("checkUpdates", 0, "try Process.GetCurrentProcess().CloseMainWindow()");
                         Process.GetCurrentProcess().CloseMainWindow();
                     }
+                }
             }
             catch (Exception ex)
             {
